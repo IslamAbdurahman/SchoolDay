@@ -1,0 +1,7 @@
+{
+    "domain": "https://your-domain.com",
+    "api_token": "your-api-token-here",
+    "hikvision_ip": "192.168.1.100",
+    "hikvision_username": "admin",
+    "hikvision_password": "password123"
+}
