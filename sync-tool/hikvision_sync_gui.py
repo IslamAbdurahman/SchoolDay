@@ -122,7 +122,16 @@ class HikvisionDevice:
             "FaceDataRecord": ("facedata.json", json.dumps(face_data_record), "application/json"),
             "FaceImage": ("face.jpg", face_bytes, "image/jpeg"),
         }
-        r = self.session.post(self._url(path), files=files, timeout=30)
+        for attempt in range(2):
+            r = self.session.post(self._url(path), files=files, timeout=30)
+            if r.status_code == 401 and attempt == 0:
+                try:
+                    self.session.auth._thread_local.__dict__.clear()
+                except Exception:
+                    pass
+                time.sleep(0.3)
+                continue
+            break
         # Capture full device error before raising
         if not r.ok:
             try:
@@ -194,7 +203,9 @@ class HikvisionDevice:
                 # If device says face already exists — raise immediately for caller to handle
                 if "alreadyexist" in msg or "already_exist" in msg or "deviceuseralreadyexistface" in msg:
                     raise
-        raise last_err
+        if last_err is not None:
+            raise last_err
+        raise Exception("Failed to add face")
 
 
 def build_user_info(student: dict) -> dict:
