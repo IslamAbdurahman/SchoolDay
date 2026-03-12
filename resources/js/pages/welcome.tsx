@@ -2,7 +2,7 @@ import React from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { useAppearance } from '@/hooks/use-appearance';
-import { Moon, Sun, Phone, Send, MessageCircle } from 'lucide-react';
+import { Moon, Sun, Phone, Send, MessageCircle, Activity } from 'lucide-react';
 
 export default function Welcome({
     canRegister = true,
@@ -78,6 +78,13 @@ export default function Welcome({
                         </div>
 
                         <nav className="flex items-center gap-2 sm:gap-4">
+                            <Link
+                                href="/monitoring"
+                                className="hidden md:flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-full transition-all border border-emerald-500/20"
+                            >
+                                <Activity className="w-4 h-4" />
+                                Monitoring
+                            </Link>
                             <a
                                 href="#contact"
                                 className="hidden md:block px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"

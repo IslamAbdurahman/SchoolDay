@@ -20,6 +20,11 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\MonitoringController;
+
+// Public monitoring routes
+Route::get('monitoring', [MonitoringController::class, 'index'])->name('monitoring');
+Route::get('monitoring/data', [MonitoringController::class, 'data'])->name('monitoring.data');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class , 'index'])->name('dashboard');
