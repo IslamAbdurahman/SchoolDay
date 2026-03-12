@@ -382,16 +382,16 @@
         "role": "Rol"
     },
     "seo": {
-        "welcome_title": "SchoolDay - Maktab va Bog'chalar uchun Aqlli Davomat va Turniket Tizimi",
-        "welcome_description": "Maktab va bog'chalar uchun innovatsion turniket, yuzni tanish (Face ID) va davomat tizimi. O'quvchilar xavfsizligini ta'minlash va ota-onalarga Telegram orqali tezkor xabarnomalar.",
-        "welcome_keywords": "maktab davomat tizimi, turniket tizimlari, bog'cha davomati, yuzni tanish davomati, Face ID maktab, o'quvchilar xavfsizligi, telegram bot davomat, Hikvision davomat tizimi, elektron davomat",
-        "og_title": "SchoolDay: Aqlli Davomat va Xavfsizlik Ekotizimi",
-        "og_description": "Turniket va Face ID orqali maktabingiz yoki bog'changizda to'liq nazorat va xavfsizlikni o'rnating.",
-        "feature_attendance_title": "Maktab Davomat Tizimi",
-        "feature_attendance_desc": "Maktabingiz uchun zamonaviy elektron davomat tizimi. Har bir o'quvchi harakati real vaqt rejimida qayd etiladi va hisobotlar avtomatik shakllanadi.",
-        "feature_turnstile_title": "Turniket va Face ID",
-        "feature_turnstile_desc": "Eng so'nggi Hikvision turniket tizimlari va yuzni tanish texnologiyasi. Bog'cha va maktab kirish joylarida xavfsizlikni eng yuqori darajaga olib chiqing.",
-        "feature_notif_title": "Telegram Xabarnomalar",
-        "feature_notif_desc": "Farzandingiz maktabga kelganida yoki ketganida darhol xabar oling. Ota-onalar xotirjamligi uchun Telegram bot orqali tezkor integratsiya."
+        "welcome_title": "SchoolDay - Maktab va Bog'chalar uchun Elektron Davomat va Face ID Turniket Tizimi",
+        "welcome_description": "Maktab va bog'chalar uchun innovatsion elektron davomat tizimi. Hikvision Face ID turniketlari, o'quvchilar xavfsizligi monitoringi va ota-onalarga Telegram orqali avtomatik SMS xabarnomalar yuborish dasturi. O'quvchilarni aqlli boshqarish tizimi.",
+        "welcome_keywords": "maktab davomat tizimi, elektron davomat dasturi, bog'cha davomat tizimi, turniket o'rnatish, yuz bilan tasdiqlash, face id turniket maktab uchun, o'quvchi monitoringi, ota onalarga telegram xabarnoma tizimi, Hikvision turniket davomat, smart maktab tizimi, o'quvchilar xavfsizligi tizimi",
+        "og_title": "SchoolDay: Aqlli Davomat va Elektron Xavfsizlik Dasturi",
+        "og_description": "Maktab va bog'chalar uchun yuzni tanib oluvchi Face ID turniketlari hamda Telegram orqali ota-onalarni xabardor qilib turuvchi zamonaviy elektron davomat tizimi.",
+        "feature_attendance_title": "Elektron Davomat Dasturi",
+        "feature_attendance_desc": "Ta'lim muassasalari uchun to'liq avtomatlashtirilgan elektron davomat tizimi. Har bir o'quvchi va xodimning harakati real vaqt rejimida qayd etiladi. Hisobotlar va statistika avtomatik shakllanadi.",
+        "feature_turnstile_title": "Face ID va Turniket Tizimlari",
+        "feature_turnstile_desc": "Eng ilg'or Hikvision Face ID yuzni tanish texnologiyasi va turniketlari yordamida maktab va bog'chaga 100% ruxsatsiz shaxslar kirishining oldini oling. O'quvchilar xavfsizligi kafolati.",
+        "feature_notif_title": "Ota-onalarga Telegram Xabarnoma",
+        "feature_notif_desc": "Farzandingiz maktabga kirdi yoki ketdi degan tezkor va avtomatik bildirishnomalar. Ota-onalar xotirjamligi va doimiy nazorat uchun Telegram bot orqali ishlaydigan xabarnoma xizmati."
     }
 }

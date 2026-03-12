@@ -382,16 +382,16 @@
         "role": "Role"
     },
     "seo": {
-        "welcome_title": "SchoolDay - Smart Attendance and Turnstile System for Schools and Kindergartens",
-        "welcome_description": "Innovative turnstiles, face recognition (Face ID), and attendance systems for educational institutions. Student safety and instant Telegram notifications for parents.",
-        "welcome_keywords": "school attendance system, turnstile installation, kindergarten attendance, face recognition attendance, Face ID for schools, student safety, telegram bot attendance, Hikvision attendance system",
-        "og_title": "SchoolDay: Smart Attendance & Security Ecosystem",
-        "og_description": "Establish full control and safety in your school or kindergarten with turnstiles and Face ID technology.",
-        "feature_attendance_title": "School Attendance System",
-        "feature_attendance_desc": "A modern electronic attendance system for your school. Every student movement is recorded in real-time, and reports are generated automatically.",
-        "feature_turnstile_title": "Turnstile and Face ID",
-        "feature_turnstile_desc": "Latest Hikvision turnstile systems and face recognition technology. Bring security to the next level in kindergartens and schools.",
-        "feature_notif_title": "Telegram Notifications",
-        "feature_notif_desc": "Get instant notifications when your child arrives at or leaves school. Quick integration via Telegram bot for parent peace of mind."
+        "welcome_title": "SchoolDay - Electronic Attendance and Face ID Turnstile System for Schools",
+        "welcome_description": "Innovative electronic attendance system for schools and kindergartens. Hikvision Face ID turnstiles, student safety monitoring, and automated SMS/Telegram notifications for parents.",
+        "welcome_keywords": "school attendance system, electronic attendance software, kindergarten attendance system, turnstile installation, facial recognition, face id turnstile for school, student monitoring, telegram notification system for parents, Hikvision turnstile attendance, smart school system, student safety system",
+        "og_title": "SchoolDay: Smart Attendance & Electronic Security Software",
+        "og_description": "Modern electronic attendance system with facial recognition turnstiles and Telegram notifications to keep parents informed.",
+        "feature_attendance_title": "Electronic Attendance Software",
+        "feature_attendance_desc": "Fully automated electronic attendance tracking for educational institutions. Every movement of students and staff is recorded in real-time with automatically generated analytics.",
+        "feature_turnstile_title": "Face ID & Turnstile Systems",
+        "feature_turnstile_desc": "Prevent unauthorized access to schools and kindergartens with advanced Hikvision Face ID recognition technology. 100% guarantee of student safety.",
+        "feature_notif_title": "Telegram Notifications for Parents",
+        "feature_notif_desc": "Instant automated alerts when your child enters or leaves school. Reliable Telegram bot notifications for parent peace of mind and constant monitoring."
     }
 }
