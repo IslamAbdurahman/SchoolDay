@@ -87,6 +87,16 @@ class HikvisionController extends Controller
 
             // --- 5. Find the matching student --------------------------------
             $employeeNo   = $accessEventData->employeeNoString ?? null;
+
+            if ($employeeNo) {
+                // Prevent multiple entries for the same student within 10 seconds
+                $lockKey = 'hikvision_debounce_' . $employeeNo;
+                if (!\Illuminate\Support\Facades\Cache::add($lockKey, true, 10)) {
+                    Log::info("Hikvision: ignored duplicate event for employee {$employeeNo}");
+                    return response()->json(['success' => true, 'reason' => 'duplicate_ignored']);
+                }
+            }
+
             $checkStudent = Student::with('schoolClass.shift')
                 ->where('employeeNoString', $employeeNo)
                 ->where('status', 'active')
