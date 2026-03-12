@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, PieChart, Users, Building2 } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, PieChart, Users, Building2, Activity } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import {
@@ -48,6 +48,11 @@ const getMainNavItems = (t: any, user: any): NavItem[] => {
             title: t('sidebar.reports', 'Reports'),
             href: '/reports',
             icon: PieChart,
+        },
+        {
+            title: t('sidebar.monitoring', 'Monitoring'),
+            href: '/monitoring',
+            icon: Activity,
         },
     ];
 
