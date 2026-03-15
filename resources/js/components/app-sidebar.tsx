@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, PieChart, Users, Building2, Activity } from 'lucide-react';
+import { BookOpen, Folder, LayoutDashboard, Clock, GraduationCap, PieChart, Users, Building2, Activity, BarChart3, UserCog } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import {
@@ -22,7 +22,7 @@ const getMainNavItems = (t: any, user: any): NavItem[] => {
         {
             title: t('sidebar.dashboard', 'Dashboard'),
             href: dashboard().url,
-            icon: LayoutGrid,
+            icon: LayoutDashboard,
         },
         {
             title: t('sidebar.branches', 'Branches'),
@@ -32,12 +32,12 @@ const getMainNavItems = (t: any, user: any): NavItem[] => {
         {
             title: t('sidebar.shifts', 'Shifts'),
             href: '/shifts',
-            icon: LayoutGrid,
+            icon: Clock,
         },
         {
             title: t('sidebar.classes', 'Classes'),
             href: '/classes',
-            icon: BookOpen,
+            icon: GraduationCap,
         },
         {
             title: t('sidebar.students', 'Students'),
@@ -47,7 +47,7 @@ const getMainNavItems = (t: any, user: any): NavItem[] => {
         {
             title: t('sidebar.reports', 'Reports'),
             href: '/reports',
-            icon: PieChart,
+            icon: BarChart3,
         },
         {
             title: t('sidebar.monitoring', 'Monitoring'),
@@ -60,7 +60,7 @@ const getMainNavItems = (t: any, user: any): NavItem[] => {
         items.push({
             title: t('sidebar.users', 'Users'),
             href: '/users',
-            icon: Users,
+            icon: UserCog,
         });
     }
 
