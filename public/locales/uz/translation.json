@@ -11,7 +11,9 @@
         "logout": "Chiqish",
         "profile": "Profil",
         "users": "Foydalanuvchilar",
-        "platform": "Platforma"
+        "platform": "Platforma",
+        "repository": "Repozitoriy",
+        "telegram": "Telegram"
     },
     "common": {
         "per_page": "Ko'rsatish",

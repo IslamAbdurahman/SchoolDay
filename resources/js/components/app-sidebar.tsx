@@ -1,7 +1,8 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutDashboard, Clock, GraduationCap, PieChart, Users, Building2, Activity, BarChart3, UserCog } from 'lucide-react';
+import { BookOpen, Folder, LayoutDashboard, Clock, GraduationCap, PieChart, Users, Building2, Activity, BarChart3, UserCog, Github, Send } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
+import { NavUser } from '@/components/nav-user';
 import {
     Sidebar,
     SidebarContent,
@@ -69,12 +70,24 @@ const getMainNavItems = (t: any, user: any): NavItem[] => {
 
 import { usePage } from '@inertiajs/react';
 
-const footerNavItems: NavItem[] = [];
-
 export function AppSidebar() {
     const { t } = useTranslation();
     const { auth } = usePage().props as unknown as { auth: { user: any } };
     const mainNavItems = getMainNavItems(t, auth?.user);
+
+    const footerNavItems: NavItem[] = [
+        {
+            title: t('sidebar.repository', 'Repository'),
+            href: 'https://github.com/islamabdurahman',
+            icon: Github,
+        },
+        {
+            title: t('sidebar.telegram', 'Telegram'),
+            href: 'https://t.me/livelongevity',
+            icon: Send,
+        },
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -93,8 +106,9 @@ export function AppSidebar() {
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 
-            <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+            <SidebarFooter className="border-t border-gray-100/50 dark:border-gray-800/50 p-4">
+                <NavFooter items={footerNavItems} className="mb-4 opacity-70 hover:opacity-100 transition-opacity" />
+                <NavUser />
             </SidebarFooter>
         </Sidebar>
     );

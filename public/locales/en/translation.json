@@ -11,7 +11,9 @@
         "logout": "Log out",
         "profile": "Profile",
         "users": "Users",
-        "platform": "Platform"
+        "platform": "Platform",
+        "repository": "Repository",
+        "telegram": "Telegram"
     },
     "common": {
         "per_page": "Show",

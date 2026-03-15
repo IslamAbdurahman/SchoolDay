@@ -11,7 +11,9 @@
         "logout": "Выйти",
         "profile": "Профиль",
         "users": "Пользователи",
-        "platform": "Платформа"
+        "platform": "Платформа",
+        "repository": "Репозиторий",
+        "telegram": "Телеграм"
     },
     "common": {
         "per_page": "Показывать",
