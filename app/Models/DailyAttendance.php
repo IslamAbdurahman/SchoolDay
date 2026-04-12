@@ -9,7 +9,7 @@ class DailyAttendance extends Model
 {
     protected $fillable = [
         'student_id', 'date', 'first_check_in', 'last_check_out',
-        'is_late', 'is_left_early', 'start_time', 'end_time'
+        'is_late', 'is_left_early', 'start_time', 'end_time',
     ];
 
     protected $casts = [

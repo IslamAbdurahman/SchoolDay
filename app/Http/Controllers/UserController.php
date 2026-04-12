@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -17,7 +17,7 @@ class UserController extends Controller
 
         return Inertia::render('users/index', [
             'users' => $users,
-            'roles' => $roles
+            'roles' => $roles,
         ]);
     }
 
@@ -28,7 +28,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'nullable|string|max:20|unique:users',
             'password' => 'required|string|min:8',
-            'role' => 'required|string|exists:roles,name'
+            'role' => 'required|string|exists:roles,name',
         ]);
 
         $user = User::create([
@@ -50,7 +50,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
             'password' => 'nullable|string|min:8',
-            'role' => 'required|string|exists:roles,name'
+            'role' => 'required|string|exists:roles,name',
         ]);
 
         $data = [
@@ -59,7 +59,7 @@ class UserController extends Controller
             'phone' => $validated['phone'] ?? null,
         ];
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $data['password'] = Hash::make($validated['password']);
         }
 
@@ -76,6 +76,7 @@ class UserController extends Controller
         }
 
         $user->delete();
+
         return redirect()->back()->with('success', 'Foydalanuvchi o\'chirildi.');
     }
 }

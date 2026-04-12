@@ -6,6 +6,11 @@ import axios from 'axios';
 import '../css/app.css';
 import './i18n';
 import { initializeTheme } from './hooks/use-appearance';
+import { configureEcho } from '@laravel/echo-react';
+
+configureEcho({
+    broadcaster: 'reverb',
+});
 
 // ── Axios global defaults ────────────────────────────────────────────────────
 // Laravel web routes require the XSRF-TOKEN cookie on every non-GET request.

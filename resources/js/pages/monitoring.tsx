@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { useAppearance } from '@/hooks/use-appearance';
+import { useEcho } from '@laravel/echo-react';
 import {
     Moon, Sun, ArrowLeft, RefreshCw, Users,
     UserCheck, UserX,
@@ -40,6 +41,8 @@ export default function Monitoring() {
     const [data, setData] = useState<MonitoringData | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const echo = useEcho();
+
     const toggleTheme = () => {
         const isDark = appearance === 'dark' || (appearance === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
         updateAppearance(isDark ? 'light' : 'dark');
@@ -47,6 +50,7 @@ export default function Monitoring() {
 
     const fetchData = useCallback(async () => {
         try {
+            setLoading(true);
             const res = await fetch('/monitoring/data');
             const json = await res.json();
             setData(json);
@@ -59,9 +63,21 @@ export default function Monitoring() {
 
     useEffect(() => {
         fetchData();
-        const interval = setInterval(fetchData, 3000);
-        return () => clearInterval(interval);
     }, [fetchData]);
+
+    useEffect(() => {
+        if (!echo) return;
+
+        const channel = echo.channel('monitoring')
+            .listen('.updated', () => {
+                console.log('Monitoring data updated via Echo');
+                fetchData();
+            });
+
+        return () => {
+            channel.stopListening('.updated');
+        };
+    }, [echo, fetchData]);
 
 
     // Overall stats
@@ -282,7 +298,7 @@ export default function Monitoring() {
 
                 {/* Footer */}
                 <footer className="relative z-10 text-center text-slate-400 text-xs py-6 px-4">
-                    Har 3 soniyada avtomatik yangilanadi • SchoolDay Monitoring
+                    Real-vaqt (WebSocket) rejimida yangilanadi • SchoolDay Monitoring
                 </footer>
             </div>
         </>

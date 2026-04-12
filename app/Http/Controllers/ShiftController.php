@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Shift;
 use App\Models\Branch;
+use App\Models\Shift;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,7 +12,7 @@ class ShiftController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', '20');
-        $limit = $perPage === 'all' ? 100000 : (int)$perPage;
+        $limit = $perPage === 'all' ? 100000 : (int) $perPage;
 
         $today = \Carbon\Carbon::today()->toDateString();
 
@@ -20,19 +20,19 @@ class ShiftController extends Controller
             ->withCount('classes')
             ->withCount('students as total_students')
             ->withCount(['students as present_students' => function ($q) use ($today) {
-            $q->whereHas('attendances', function ($a) use ($today) {
+                $q->whereHas('attendances', function ($a) use ($today) {
                     $a->whereDate('date', $today);
                 }
                 );
             }])
             ->withCount(['students as on_time_students' => function ($q) use ($today) {
-            $q->whereHas('attendances', function ($a) use ($today) {
+                $q->whereHas('attendances', function ($a) use ($today) {
                     $a->whereDate('date', $today)->where('is_late', false);
                 }
                 );
             }])
             ->withCount(['students as late_students' => function ($q) use ($today) {
-            $q->whereHas('attendances', function ($a) use ($today) {
+                $q->whereHas('attendances', function ($a) use ($today) {
                     $a->whereDate('date', $today)->where('is_late', true);
                 }
                 );
@@ -44,7 +44,7 @@ class ShiftController extends Controller
         return Inertia::render('shifts/index', [
             'shifts' => $shifts,
             'branches' => $branches,
-            'filters' => ['per_page' => $perPage]
+            'filters' => ['per_page' => $perPage],
         ]);
     }
 
@@ -53,6 +53,7 @@ class ShiftController extends Controller
         $validated = $request->validated();
 
         Shift::create($validated);
+
         return redirect()->back()->with('success', 'crud.created');
     }
 
@@ -61,6 +62,7 @@ class ShiftController extends Controller
         $validated = $request->validated();
 
         $shift->update($validated);
+
         return redirect()->back()->with('success', 'crud.updated');
     }
 
@@ -68,12 +70,13 @@ class ShiftController extends Controller
     {
         try {
             $shift->delete();
+
             return redirect()->back()->with('success', 'crud.deleted');
-        }
-        catch (\Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() == 23000) {
                 return redirect()->back()->with('error', 'crud.delete_shift_error');
             }
+
             return redirect()->back()->with('error', 'crud.error');
         }
     }

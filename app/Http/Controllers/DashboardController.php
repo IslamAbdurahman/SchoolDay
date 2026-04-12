@@ -6,7 +6,6 @@ use App\Models\DailyAttendance;
 use App\Models\HikvisionAccessEvent;
 use App\Models\Student;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -35,7 +34,7 @@ class DashboardController extends Controller
             ->selectRaw('date, count(*) as present, sum(case when is_late then 1 else 0 end) as late')
             ->groupBy('date')
             ->get()
-            ->keyBy(function($item) {
+            ->keyBy(function ($item) {
                 return Carbon::parse($item->date)->format('Y-m-d');
             });
 
@@ -45,10 +44,10 @@ class DashboardController extends Controller
         while ($currentDate <= $now) {
             $dateStr = $currentDate->toDateString();
             $data = $monthlyAttendance->get($dateStr);
-            
-            $present = $data ? (int)$data->present : 0;
-            $late = $data ? (int)$data->late : 0;
-            
+
+            $present = $data ? (int) $data->present : 0;
+            $late = $data ? (int) $data->late : 0;
+
             $monthlyStats[] = [
                 'date' => $currentDate->format('d.m'),
                 'present' => $present,
@@ -65,10 +64,10 @@ class DashboardController extends Controller
                 'present_today' => $presentToday,
                 'late_arrivals' => $lateArrivals,
                 'on_time_today' => max(0, $presentToday - $lateArrivals),
-                'absent_today' => $absent
+                'absent_today' => $absent,
             ],
             'monthly_stats' => $monthlyStats,
-            'recent_events' => $recentEvents
+            'recent_events' => $recentEvents,
         ]);
     }
 }

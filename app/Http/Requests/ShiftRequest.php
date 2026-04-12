@@ -24,15 +24,15 @@ class ShiftRequest extends FormRequest
                 'required',
                 'exists:branches,id',
                 function ($attribute, $value, $fail) {
-            $shiftId = $this->route('shift') ? $this->route('shift')->id : null;
-            $query = \App\Models\Shift::where('branch_id', $value);
-            if ($shiftId) {
-                $query->where('id', '!=', $shiftId);
-            }
-            if ($query->count() >= 2) {
-                $fail('Bitta filialga 2 tadan ortiq smena qo\'shish mumkin emas.');
-            }
-        },
+                    $shiftId = $this->route('shift') ? $this->route('shift')->id : null;
+                    $query = \App\Models\Shift::where('branch_id', $value);
+                    if ($shiftId) {
+                        $query->where('id', '!=', $shiftId);
+                    }
+                    if ($query->count() >= 2) {
+                        $fail('Bitta filialga 2 tadan ortiq smena qo\'shish mumkin emas.');
+                    }
+                },
             ],
         ];
     }

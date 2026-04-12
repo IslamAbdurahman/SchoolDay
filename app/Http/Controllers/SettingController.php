@@ -13,7 +13,7 @@ class SettingController extends Controller
         $settings = Setting::all()->pluck('value', 'key')->toArray();
 
         return Inertia::render('settings/index', [
-            'settings' => $settings
+            'settings' => $settings,
         ]);
     }
 
@@ -31,13 +31,13 @@ class SettingController extends Controller
 
         foreach ($validated as $key => $value) {
             Setting::updateOrCreate(
-            ['key' => $key],
-            ['value' => $value]
+                ['key' => $key],
+                ['value' => $value]
             );
         }
 
-        if (!empty($validated['telegram_bot_token'])) {
-            $service = new \App\Services\Telegram\TelegramService();
+        if (! empty($validated['telegram_bot_token'])) {
+            $service = new \App\Services\Telegram\TelegramService;
             // Assuming your application uses https
             $url = url('/api/telegram/webhook');
             if (str_starts_with($url, 'https')) {

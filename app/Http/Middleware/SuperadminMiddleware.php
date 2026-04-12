@@ -11,11 +11,11 @@ class SuperadminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->hasRole('Superadmin')) {
+        if (! auth()->check() || ! auth()->user()->hasRole('Superadmin')) {
             abort(403, 'Ruxsat etilmagan');
         }
 

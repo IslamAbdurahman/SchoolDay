@@ -17,7 +17,7 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', '20');
-        $limit = $perPage === 'all' ? 100000 : (int)$perPage;
+        $limit = $perPage === 'all' ? 100000 : (int) $perPage;
         $classId = $request->input('class_id');
         $status = $request->input('status');
         $search = $request->input('search');
@@ -48,7 +48,7 @@ class StudentController extends Controller
                 'status' => $status,
                 'search' => $search,
                 'per_page' => $perPage,
-            ]
+            ],
         ]);
     }
 
@@ -63,8 +63,8 @@ class StudentController extends Controller
 
         $student = Student::create($validated);
 
-        if (!isset($validated['employeeNoString']) || empty($validated['employeeNoString'])) {
-            $student->update(['employeeNoString' => (string)$student->id]);
+        if (! isset($validated['employeeNoString']) || empty($validated['employeeNoString'])) {
+            $student->update(['employeeNoString' => (string) $student->id]);
         }
 
         return redirect()->back()->with('success', 'crud.created');
@@ -77,12 +77,12 @@ class StudentController extends Controller
         if ($request->hasFile('face_image')) {
             $path = $request->file('face_image')->store('faces', 'public');
             $validated['face_image'] = '/storage/' . $path;
-        }
-        else {
+        } else {
             unset($validated['face_image']);
         }
 
         $student->update($validated);
+
         return redirect()->back()->with('success', 'crud.updated');
     }
 
@@ -90,12 +90,13 @@ class StudentController extends Controller
     {
         try {
             $student->delete();
+
             return redirect()->back()->with('success', 'crud.deleted');
-        }
-        catch (\Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() == 23000) {
                 return redirect()->back()->with('error', 'O\'chirish mumkin emas. Bu o\'quvchiga bog\'langan ma\'lumotlar (masalan: davomat) mavjud!');
             }
+
             return redirect()->back()->with('error', 'crud.error');
         }
     }

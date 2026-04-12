@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class SchoolClass extends Model
 {
     protected $table = 'classes';
+
     protected $fillable = ['name', 'shift_id', 'telegram_group_id'];
 
     public function shift(): BelongsTo
@@ -18,6 +19,6 @@ class SchoolClass extends Model
 
     public function students(): HasMany
     {
-        return $this->hasMany(Student::class , 'class_id');
+        return $this->hasMany(Student::class, 'class_id');
     }
 }

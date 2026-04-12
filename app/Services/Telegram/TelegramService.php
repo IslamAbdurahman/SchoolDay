@@ -3,8 +3,9 @@
 namespace App\Services\Telegram;
 
 use App\Models\Setting;
-use App\Models\User;
 use App\Models\Student;
+use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use Telegram\Bot\Keyboard\Keyboard;
@@ -12,6 +13,7 @@ use Telegram\Bot\Keyboard\Keyboard;
 class TelegramService
 {
     protected Api $telegram;
+
     protected string $token;
 
     public function __construct()
@@ -25,13 +27,13 @@ class TelegramService
 
     public function setWebhook(string $url): void
     {
-        if (empty($this->token))
+        if (empty($this->token)) {
             return;
+        }
 
         try {
             $this->telegram->setWebhook(['url' => $url]);
-        }
-        catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Telegram setWebhook error: ' . $e->getMessage());
         }
     }
@@ -42,7 +44,7 @@ class TelegramService
     public function handleUpdate(array $update): void
     {
         $message = $update['message'] ?? null;
-        if (!$message) {
+        if (! $message) {
             return;
         }
 
@@ -53,19 +55,18 @@ class TelegramService
 
         // Agar xabar guruhdan kelgan bo'lsa (guruh ID si har doim manfiy bo'ladi)
         if ($chatId < 0) {
-            if ($text === '/start' || $text === '/info' || str_starts_with((string)$text, '/start') || !empty($newChatMembers)) {
+            if ($text === '/start' || $text === '/info' || str_starts_with((string) $text, '/start') || ! empty($newChatMembers)) {
                 $this->sendGroupInfo($chatId);
             }
+
             return; // Guruhda boshqa narsalarga spam qilmaslik uchun to'xtatamiz
         }
 
         if ($text === '/start') {
             $this->askPhoneNumber($chatId);
-        }
-        elseif ($contact) {
+        } elseif ($contact) {
             $this->savePhoneNumber($chatId, $contact);
-        }
-        else {
+        } else {
             $this->sendUnknownCommand($chatId);
         }
     }
@@ -86,13 +87,11 @@ class TelegramService
 
                 $message = "🏫 <b>Sinf:</b> {$className}\n🕗 <b>Smena:</b> {$shiftName}\n🏢 <b>Filial:</b> {$branchName}\n👥 <b>O'quvchilar soni:</b> {$studentsCount} ta\n\n✅ <i>Ushbu guruh tizimga muvaffaqiyatli ulangan.</i>";
                 $this->sendSafeMessage($chatId, $message);
-            }
-            else {
+            } else {
                 $message = "⚠️ Ushbu guruh tizimga ulanmagan.\n\nIltimos, ushbu ID ni admin panelda tegishli sinf sozlamalariga kiriting.\n👇 <b>Nusxalash uchun ID ustiga bosing:</b>\n\n<code>{$chatId}</code>";
                 $this->sendSafeMessage($chatId, $message);
             }
-        }
-        catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Telegram sendGroupInfo error: ' . $e->getMessage());
         }
     }
@@ -108,8 +107,8 @@ class TelegramService
                     Keyboard::button([
                         'text' => '📱 Share my phone number',
                         'request_contact' => true,
-                    ])
-                ]
+                    ]),
+                ],
             ],
             'resize_keyboard' => true,
             'one_time_keyboard' => true,
@@ -148,14 +147,14 @@ class TelegramService
                 if ($userUpdated) {
                     $users = User::where('telegram_id', $chatId)->get();
                     foreach ($users as $u) {
-                        $linkedNames->push("👤 <b>" . $u->name . "</b> (Xodim/O'qituvchi)");
+                        $linkedNames->push('👤 <b>' . $u->name . "</b> (Xodim/O'qituvchi)");
                     }
                 }
 
                 if ($studentUpdated) {
                     $students = Student::where('telegram_id', $chatId)->get();
                     foreach ($students as $s) {
-                        $linkedNames->push("🎓 <b>" . $s->name . "</b> (O'quvchi)");
+                        $linkedNames->push('🎓 <b>' . $s->name . "</b> (O'quvchi)");
                     }
                 }
 
@@ -164,8 +163,7 @@ class TelegramService
                 $message = "👋 <b>Tizimga ulanish yakunlandi!</b>\n\nQuyidagi hisoblar ushbu raqamga biriktirildi:\n\n{$namesList}\n\nEndi ularga oid bildirishnomalarni qabul qilib olasiz.";
 
                 $this->sendSafeMessage($chatId, $message, Keyboard::remove());
-            }
-            else {
+            } else {
                 $this->sendSafeMessage(
                     $chatId,
                     "❌ Sizning raqamingiz bazada o'quvchi yoki admin sifatida topilmadi. Iltimos, ma'muriyat bilan bog'laning.",
@@ -173,8 +171,7 @@ class TelegramService
                 );
             }
 
-        }
-        catch (\Exception $e) {
+        } catch (Exception $e) {
             \Log::error('Error saving Telegram phone: ' . $e->getMessage());
 
             $this->sendSafeMessage(
@@ -195,8 +192,7 @@ class TelegramService
                 'chat_id' => $chatId,
                 'text' => "Nomalum buyruq. Iltimos, /start buyrug'ini yuboring.",
             ]);
-        }
-        catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Telegram sendMessage error: ' . $e->getMessage());
         }
     }
@@ -204,7 +200,7 @@ class TelegramService
     /**
      * Safe message sender
      */
-    public function sendSafeMessage(int|string $chatId, string $text, Keyboard $keyboard = null): void
+    public function sendSafeMessage(int|string $chatId, string $text, ?Keyboard $keyboard = null): void
     {
         try {
             $params = [
@@ -218,8 +214,7 @@ class TelegramService
             }
 
             $this->telegram->sendMessage($params);
-        }
-        catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Telegram sendMessage error: ' . $e->getMessage());
         }
     }
@@ -232,8 +227,9 @@ class TelegramService
         try {
             // First check if photo exists
             $fullPath = storage_path('app/public/' . $photoPath);
-            if (!file_exists($fullPath)) {
+            if (! file_exists($fullPath)) {
                 $this->sendSafeMessage($chatId, $caption);
+
                 return;
             }
 
@@ -243,8 +239,7 @@ class TelegramService
                 'caption' => $caption,
                 'parse_mode' => 'HTML',
             ]);
-        }
-        catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Telegram sendPhoto error: ' . $e->getMessage() . '. Falling back to text message.');
             // Fallback to regular text message
             $this->sendSafeMessage($chatId, $caption);

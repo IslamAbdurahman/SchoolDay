@@ -2,12 +2,14 @@
 
 namespace App\Observers;
 
+use App\Events\MonitoringUpdate;
 use App\Models\DailyAttendance;
 use App\Models\HikvisionAccessEvent;
 use App\Models\Student;
 use Carbon\Carbon;
-use Telegram\Bot\Laravel\Facades\Telegram;
+use Exception;
 use Illuminate\Support\Facades\Log;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class HikvisionAccessEventObserver
 {
@@ -16,6 +18,9 @@ class HikvisionAccessEventObserver
      */
     public function created(HikvisionAccessEvent $event): void
     {
+        // Broadcast the update event for monitoring page
+        MonitoringUpdate::dispatch();
+
         // Ignore if no employee string
         if (empty($event->employeeNoString)) {
             return;
@@ -24,7 +29,7 @@ class HikvisionAccessEventObserver
         // Identify the student
         $student = Student::with(['schoolClass.shift.branch'])->where('employeeNoString', $event->employeeNoString)->first();
 
-        if (!$student || !$student->schoolClass || !$student->schoolClass->shift) {
+        if (! $student || ! $student->schoolClass || ! $student->schoolClass->shift) {
             return; // Can't process if no student or no shift assigned
         }
 
@@ -38,7 +43,7 @@ class HikvisionAccessEventObserver
             ->where('date', $date)
             ->first();
 
-        if (!$attendance) {
+        if (! $attendance) {
             // first check-in
             $isLate = $now->greaterThan($shiftStartTime);
 
@@ -56,7 +61,7 @@ class HikvisionAccessEventObserver
             $groupId = $student->schoolClass->telegram_group_id ?? null;
             if ($student->telegram_id || $groupId) {
                 try {
-                    $statusLine = $isLate ? "🔴 <b>Kechikdi</b>" : "🔵 <b>Vaqtida keldi</b>";
+                    $statusLine = $isLate ? '🔴 <b>Kechikdi</b>' : '🔵 <b>Vaqtida keldi</b>';
                     $datetime = $now->format('Y-m-d H:i:s');
                     $className = $student->schoolClass->name ?? '-';
                     $shiftName = $student->schoolClass->shift->name ?? '-';
@@ -64,35 +69,33 @@ class HikvisionAccessEventObserver
 
                     $message = "👤 <b>O'quvchi:</b> {$student->name}\n🏫 <b>Sinf:</b> {$className}\n🕗 <b>Smena:</b> {$shiftName}\n🏢 <b>Filial:</b> {$branchName}\n——\n{$statusLine}\n📅 <b>Sana:</b> {$datetime}";
 
-                    $telegramService = new \App\Services\Telegram\TelegramService();
+                    $telegramService = new \App\Services\Telegram\TelegramService;
 
                     $targets = [];
-                    if ($student->telegram_id)
+                    if ($student->telegram_id) {
                         $targets[] = $student->telegram_id;
-                    if ($groupId)
+                    }
+                    if ($groupId) {
                         $targets[] = $groupId;
+                    }
 
                     foreach ($targets as $targetId) {
                         try {
-                            if (!empty($event->picture)) {
+                            if (! empty($event->picture)) {
                                 $telegramService->sendPhotoWithFallback($targetId, $event->picture, $message);
-                            }
-                            else {
+                            } else {
                                 $telegramService->sendSafeMessage($targetId, $message);
                             }
-                        }
-                        catch (\Exception $e) {
+                        } catch (Exception $e) {
                             Log::error("Telegram yuborishda xato ({$targetId}): " . $e->getMessage());
                         }
                     }
-                }
-                catch (\Exception $e) {
-                    Log::error("Telegram yuborishda xato: " . $e->getMessage());
+                } catch (Exception $e) {
+                    Log::error('Telegram yuborishda xato: ' . $e->getMessage());
                 }
             }
 
-        }
-        else {
+        } else {
             // subsequent check-out
             $isLeftEarly = $now->lessThan($shiftEndTime);
 
@@ -115,30 +118,29 @@ class HikvisionAccessEventObserver
 
                     $message = "👤 <b>O'quvchi:</b> {$student->name}\n🏫 <b>Sinf:</b> {$className}\n🕗 <b>Smena:</b> {$shiftName}\n🏢 <b>Filial:</b> {$branchName}\n——\n 📅 <b>Sana:</b> {$datetime}";
 
-                    $telegramService = new \App\Services\Telegram\TelegramService();
+                    $telegramService = new \App\Services\Telegram\TelegramService;
 
                     $targets = [];
-                    if ($student->telegram_id)
+                    if ($student->telegram_id) {
                         $targets[] = $student->telegram_id;
-                    if ($groupId)
+                    }
+                    if ($groupId) {
                         $targets[] = $groupId;
+                    }
 
                     foreach ($targets as $targetId) {
                         try {
-                            if (!empty($event->picture)) {
+                            if (! empty($event->picture)) {
                                 $telegramService->sendPhotoWithFallback($targetId, $event->picture, $message);
-                            }
-                            else {
+                            } else {
                                 $telegramService->sendSafeMessage($targetId, $message);
                             }
-                        }
-                        catch (\Exception $e) {
+                        } catch (Exception $e) {
                             Log::error("Telegram yuborishda xato ({$targetId}): " . $e->getMessage());
                         }
                     }
-                }
-                catch (\Exception $e) {
-                    Log::error("Telegram yuborish umumiy xato: " . $e->getMessage());
+                } catch (Exception $e) {
+                    Log::error('Telegram yuborish umumiy xato: ' . $e->getMessage());
                 }
             }
         }
@@ -149,7 +151,7 @@ class HikvisionAccessEventObserver
      */
     public function updated(HikvisionAccessEvent $event): void
     {
-    //
+        //
     }
 
     /**
@@ -157,7 +159,7 @@ class HikvisionAccessEventObserver
      */
     public function deleted(HikvisionAccessEvent $event): void
     {
-    //
+        //
     }
 
     /**
@@ -165,7 +167,7 @@ class HikvisionAccessEventObserver
      */
     public function restored(HikvisionAccessEvent $event): void
     {
-    //
+        //
     }
 
     /**
@@ -173,6 +175,6 @@ class HikvisionAccessEventObserver
      */
     public function forceDeleted(HikvisionAccessEvent $event): void
     {
-    //
+        //
     }
 }

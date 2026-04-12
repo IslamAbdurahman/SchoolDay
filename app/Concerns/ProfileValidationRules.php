@@ -44,7 +44,7 @@ trait ProfileValidationRules
             'email',
             'max:255',
             $userId === null
-            ?Rule::unique(User::class)
+            ? Rule::unique(User::class)
             : Rule::unique(User::class)->ignore($userId),
         ];
     }
@@ -61,7 +61,7 @@ trait ProfileValidationRules
             'string',
             'max:255',
             $userId === null
-            ?Rule::unique(User::class)
+            ? Rule::unique(User::class)
             : Rule::unique(User::class)->ignore($userId),
         ];
     }

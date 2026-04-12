@@ -41,7 +41,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user() ? array_merge($request->user()->toArray(), ['roles' => $request->user()->roles->pluck('name')]) : null,
             ],
-            'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => [
                 'new_student' => $request->session()->get('new_student'),
                 'success' => $request->session()->get('success'),

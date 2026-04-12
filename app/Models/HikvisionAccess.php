@@ -10,7 +10,7 @@ class HikvisionAccess extends Model
     protected $fillable = [
         'ipAddress', 'portNo', 'protocol', 'macAddress', 'channelId',
         'dateTime', 'activePostCount', 'eventType', 'eventState',
-        'eventDescription', 'shortSerialNumber'
+        'eventDescription', 'shortSerialNumber',
     ];
 
     protected $casts = [

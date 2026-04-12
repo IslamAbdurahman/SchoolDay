@@ -27,7 +27,7 @@ class MonitoringController extends Controller
         $branches = Branch::with([
             'shifts.classes.students' => function ($q) {
                 $q->orderBy('name');
-            }
+            },
         ])->get();
 
         $result = [];
@@ -48,7 +48,9 @@ class MonitoringController extends Controller
 
                     foreach ($class->students as $student) {
                         $isPresent = in_array($student->id, $presentStudentIds);
-                        if ($isPresent) $classPresent++;
+                        if ($isPresent) {
+                            $classPresent++;
+                        }
 
                         $classStudents[] = [
                             'id' => $student->id,

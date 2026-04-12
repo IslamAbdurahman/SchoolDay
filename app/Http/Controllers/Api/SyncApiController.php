@@ -37,7 +37,7 @@ class SyncApiController extends Controller
      */
     public function students(Request $request)
     {
-        if (!$this->authorize($request)) {
+        if (! $this->authorize($request)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -54,15 +54,15 @@ class SyncApiController extends Controller
 
             return [
                 'id' => $student->id,
-                'employeeNo' => $student->employeeNoString ?: (string)$student->id,
+                'employeeNo' => $student->employeeNoString ?: (string) $student->id,
                 'name' => $student->name,
                 'face_image_url' => $faceUrl,
                 'gender' => $student->gender,
                 'user_verify_mode' => $student->user_verify_mode,
-                'local_ui_right' => (bool)$student->local_ui_right,
+                'local_ui_right' => (bool) $student->local_ui_right,
                 'door_right' => $student->door_right ?? '1',
                 'plan_template_no' => $student->plan_template_no ?? '1',
-                'valid_enabled' => (bool)$student->valid_enabled,
+                'valid_enabled' => (bool) $student->valid_enabled,
                 'valid_begin' => $student->valid_begin?->format('Y-m-d\TH:i:s'),
                 'valid_end' => $student->valid_end?->format('Y-m-d\TH:i:s'),
             ];

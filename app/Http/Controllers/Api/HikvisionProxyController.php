@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class HikvisionProxyController extends Controller
         $path = $request->input('path');
         $body = $request->input('body');
 
-        if (!$ip || !$path) {
+        if (! $ip || ! $path) {
             return response()->json(['hik_ok' => false, 'error' => 'ip and path are required'], 422);
         }
 
@@ -75,7 +76,7 @@ class HikvisionProxyController extends Controller
             }
 
             $hikStatus = $guzzleResponse->getStatusCode();
-            $rawBody = (string)$guzzleResponse->getBody();
+            $rawBody = (string) $guzzleResponse->getBody();
             $hikBody = json_decode($rawBody, true) ?? ['raw' => $rawBody];
 
             return response()->json([
@@ -83,19 +84,17 @@ class HikvisionProxyController extends Controller
                 'hik_status' => $hikStatus,
                 'data' => $hikBody,
             ]);
-        }
-        catch (ConnectException $e) {
+        } catch (ConnectException $e) {
             return response()->json([
                 'hik_ok' => false,
                 'error' => 'Qurilmaga ulanib bo\'lmadi: ' . $e->getMessage(),
             ]);
-        }
-        catch (\GuzzleHttp\Exception\RequestException $e) {
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
             // Guzzle throws on 4xx/5xx — capture the real Hikvision status
             if ($e->hasResponse()) {
                 $guzzleResponse = $e->getResponse();
                 $hikStatus = $guzzleResponse->getStatusCode();
-                $rawBody = (string)$guzzleResponse->getBody();
+                $rawBody = (string) $guzzleResponse->getBody();
                 $hikBody = json_decode($rawBody, true) ?? ['raw' => $rawBody];
 
                 return response()->json([
@@ -109,8 +108,7 @@ class HikvisionProxyController extends Controller
                 'hik_ok' => false,
                 'error' => $e->getMessage(),
             ]);
-        }
-        catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'hik_ok' => false,
                 'error' => $e->getMessage(),

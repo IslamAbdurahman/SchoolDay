@@ -21,5 +21,6 @@ class Shift extends Model
 
     public function students(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
-        return $this->hasManyThrough(Student::class , SchoolClass::class , 'shift_id', 'class_id');
-    }}
+        return $this->hasManyThrough(Student::class, SchoolClass::class, 'shift_id', 'class_id');
+    }
+}

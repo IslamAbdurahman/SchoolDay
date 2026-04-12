@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Observers\HikvisionAccessEventObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use App\Observers\HikvisionAccessEventObserver;
 
 #[ObservedBy([HikvisionAccessEventObserver::class])]
 class HikvisionAccessEvent extends Model
@@ -21,14 +21,14 @@ class HikvisionAccessEvent extends Model
 
     protected $casts = [
         'purePwdVerifyEnable' => 'boolean',
-        'onlyVerify'          => 'boolean',
-        'start_time'          => 'datetime',
-        'end_time'            => 'datetime',
+        'onlyVerify' => 'boolean',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
     ];
 
     public function access(): BelongsTo
     {
-        return $this->belongsTo(HikvisionAccess::class , 'hikvision_access_id');
+        return $this->belongsTo(HikvisionAccess::class, 'hikvision_access_id');
     }
 
     public function faceRects(): HasMany

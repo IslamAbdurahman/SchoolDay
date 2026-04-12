@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class FaceRect extends Model
 {
     protected $fillable = [
-        'hikvision_access_event_id', 'height', 'width', 'x', 'y'
+        'hikvision_access_event_id', 'height', 'width', 'x', 'y',
     ];
 
     public function accessEvent(): BelongsTo
     {
-        return $this->belongsTo(HikvisionAccessEvent::class , 'hikvision_access_event_id');
+        return $this->belongsTo(HikvisionAccessEvent::class, 'hikvision_access_event_id');
     }
 }

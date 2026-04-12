@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\DailyAttendance;
 use App\Models\SchoolClass;
-use App\Models\Branch;
 use App\Models\Shift;
 use App\Models\Student;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class ReportController extends Controller
 {
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', '20');
-        $limit = $perPage === 'all' ? 100000 : (int)$perPage;
+        $limit = $perPage === 'all' ? 100000 : (int) $perPage;
         $startDate = $request->input('start_date', Carbon::today()->toDateString());
         $endDate = $request->input('end_date', Carbon::today()->toDateString());
 
@@ -28,7 +28,7 @@ class ReportController extends Controller
 
         if ($status === 'absent') {
             $query = Student::with(['schoolClass.shift.branch'])
-                ->whereDoesntHave('attendances', function($q) use ($startDate, $endDate) {
+                ->whereDoesntHave('attendances', function ($q) use ($startDate, $endDate) {
                     $q->whereBetween('date', [$startDate, $endDate]);
                 });
             if ($studentId) {
@@ -36,11 +36,11 @@ class ReportController extends Controller
             } else {
                 if ($classId) {
                     $query->where('class_id', $classId);
-                } else if ($shiftId) {
+                } elseif ($shiftId) {
                     $query->whereHas('schoolClass', function ($q) use ($shiftId) {
                         $q->where('shift_id', $shiftId);
                     });
-                } else if ($branchId) {
+                } elseif ($branchId) {
                     $query->whereHas('schoolClass.shift', function ($q) use ($branchId) {
                         $q->where('branch_id', $branchId);
                     });
@@ -54,6 +54,7 @@ class ReportController extends Controller
                 $item->id = 'absent-' . $student->id;
                 $item->setRelation('student', $student);
                 $item->is_absent_placeholder = true;
+
                 return $item;
             });
         } else {
@@ -64,19 +65,16 @@ class ReportController extends Controller
 
             if ($studentId) {
                 $query->where('student_id', $studentId);
-            }
-            else {
+            } else {
                 if ($classId) {
                     $query->whereHas('student', function ($q) use ($classId) {
                         $q->where('class_id', $classId);
                     });
-                }
-                else if ($shiftId) {
+                } elseif ($shiftId) {
                     $query->whereHas('student.schoolClass', function ($q) use ($shiftId) {
                         $q->where('shift_id', $shiftId);
                     });
-                }
-                else if ($branchId) {
+                } elseif ($branchId) {
                     $query->whereHas('student.schoolClass.shift', function ($q) use ($branchId) {
                         $q->where('branch_id', $branchId);
                     });
@@ -100,7 +98,7 @@ class ReportController extends Controller
                 'student_id' => $studentId,
                 'status' => $status,
                 'per_page' => $perPage,
-            ]
+            ],
         ]);
     }
 
@@ -116,7 +114,7 @@ class ReportController extends Controller
                     $query->whereDate('dateTime', $attendance->date);
                 })
                 ->get()
-                ->sortBy(fn($event) => $event->access?->dateTime)
+                ->sortBy(fn ($event) => $event->access?->dateTime)
                 ->values();
         }
 

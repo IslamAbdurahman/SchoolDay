@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Setting;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -30,8 +30,7 @@ class UserSeeder extends Seeder
                 'name' => 'Superadmin',
                 'password' => Hash::make('11221122aa.A'),
             ]);
-        }
-        else {
+        } else {
             $superadmin = User::create([
                 'email' => 'abdurahmanislam304@gmail.com',
                 'phone' => '+998911157709',
@@ -53,8 +52,7 @@ class UserSeeder extends Seeder
                 'name' => 'Admin',
                 'password' => Hash::make('11221122'),
             ]);
-        }
-        else {
+        } else {
             $admin = User::create([
                 'email' => 'admin@gmail.com',
                 'phone' => '+998901234567',
@@ -65,8 +63,8 @@ class UserSeeder extends Seeder
         $admin->assignRole($roleAdmin);
 
         Setting::firstOrCreate(
-        ['key' => 'branch_limit'],
-        ['value' => '1']
+            ['key' => 'branch_limit'],
+            ['value' => '1']
         );
     }
 }

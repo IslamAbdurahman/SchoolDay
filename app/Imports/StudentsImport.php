@@ -3,14 +3,15 @@
 namespace App\Imports;
 
 use App\Models\Student;
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StudentsImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue
+class StudentsImport implements ShouldQueue, ToCollection, WithChunkReading, WithHeadingRow
 {
     protected $classId;
 
@@ -36,25 +37,24 @@ class StudentsImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                 }
 
                 if ($phone) {
-                    $phone = trim((string)$phone);
-                    if (!str_starts_with($phone, '+')) {
+                    $phone = trim((string) $phone);
+                    if (! str_starts_with($phone, '+')) {
                         $phone = '+' . $phone;
                     }
                 }
 
                 $gender = 'unknown';
                 if ($jins !== null) {
-                    if ((string)$jins === '0' || strtolower((string)$jins) === 'ayol' || strtolower((string)$jins) === 'female') {
+                    if ((string) $jins === '0' || strtolower((string) $jins) === 'ayol' || strtolower((string) $jins) === 'female') {
                         $gender = 'female';
-                    }
-                    elseif ((string)$jins === '1' || strtolower((string)$jins) === 'erkak' || strtolower((string)$jins) === 'male') {
+                    } elseif ((string) $jins === '1' || strtolower((string) $jins) === 'erkak' || strtolower((string) $jins) === 'male') {
                         $gender = 'male';
                     }
                 }
 
                 $student = Student::create([
                     'name' => $name,
-                    'phone' => $phone ? (string)$phone : null,
+                    'phone' => $phone ? (string) $phone : null,
                     'class_id' => $this->classId,
                     'gender' => $gender,
                     'status' => 'active',
@@ -63,11 +63,11 @@ class StudentsImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                 ]);
 
                 // Update employeeNoString based on auto-incrementing ID
-                $student->update(['employeeNoString' => (string)$student->id]);
+                $student->update(['employeeNoString' => (string) $student->id]);
 
-            }
-            catch (\Exception $e) {
-                Log::error("Excel Import Student xatoligi: " . $e->getMessage(), ['row' => $row]);
+            } catch (Exception $e) {
+                Log::error('Excel Import Student xatoligi: ' . $e->getMessage(), ['row' => $row]);
+
                 continue;
             }
         }

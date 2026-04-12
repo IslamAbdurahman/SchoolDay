@@ -11,51 +11,52 @@ class BranchController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', '20');
-        $limit = $perPage === 'all' ? 100000 : (int)$perPage;
+        $limit = $perPage === 'all' ? 100000 : (int) $perPage;
 
         $today = \Carbon\Carbon::today()->toDateString();
 
         $branches = Branch::withCount('shifts')
             ->with([
-            'macAddresses',
-            'shifts' => function ($q) use ($today) {
-            $q->withCount('classes')
-                ->withCount('students as total_students')
-                ->withCount(['students as present_students' => function ($q) use ($today) {
-                $q->whereHas('attendances', function ($a) use ($today) {
-                            $a->whereDate('date', $today);
-                        }
+                'macAddresses',
+                'shifts' => function ($q) use ($today) {
+                    $q->withCount('classes')
+                        ->withCount('students as total_students')
+                        ->withCount(['students as present_students' => function ($q) use ($today) {
+                            $q->whereHas('attendances', function ($a) use ($today) {
+                                $a->whereDate('date', $today);
+                            }
                             );
-                    }
+                        },
                         ])
                         ->withCount(['students as on_time_students' => function ($q) use ($today) {
-                $q->whereHas('attendances', function ($a) use ($today) {
-                            $a->whereDate('date', $today)->where('is_late', false);
-                        }
+                            $q->whereHas('attendances', function ($a) use ($today) {
+                                $a->whereDate('date', $today)->where('is_late', false);
+                            }
                             );
-                    }
+                        },
                         ])
                         ->withCount(['students as late_students' => function ($q) use ($today) {
-                $q->whereHas('attendances', function ($a) use ($today) {
-                            $a->whereDate('date', $today)->where('is_late', true);
-                        }
+                            $q->whereHas('attendances', function ($a) use ($today) {
+                                $a->whereDate('date', $today)->where('is_late', true);
+                            }
                             );
-                    }
+                        },
                         ]);
-                }
-        ])
+                },
+            ])
             ->latest()
             ->paginate($limit)
             ->through(function ($branch) {
-            $branch->classes_count = $branch->shifts->sum('classes_count');
-            $branch->total_students = $branch->shifts->sum('total_students');
-            $branch->present_students = $branch->shifts->sum('present_students');
-            $branch->on_time_students = $branch->shifts->sum('on_time_students');
-            $branch->late_students = $branch->shifts->sum('late_students');
-            $branch->mac_address_list = $branch->macAddresses->pluck('mac_address')->toArray();
-            unset($branch->shifts);
-            return $branch;
-        });
+                $branch->classes_count = $branch->shifts->sum('classes_count');
+                $branch->total_students = $branch->shifts->sum('total_students');
+                $branch->present_students = $branch->shifts->sum('present_students');
+                $branch->on_time_students = $branch->shifts->sum('on_time_students');
+                $branch->late_students = $branch->shifts->sum('late_students');
+                $branch->mac_address_list = $branch->macAddresses->pluck('mac_address')->toArray();
+                unset($branch->shifts);
+
+                return $branch;
+            });
 
         return Inertia::render('branches/index', [
             'branches' => $branches,
@@ -70,7 +71,7 @@ class BranchController extends Controller
         unset($validated['mac_addresses']);
 
         $limit = \App\Models\Setting::where('key', 'branch_limit')->value('value') ?? 1;
-        if (\App\Models\Branch::count() >= $limit) {
+        if (Branch::count() >= $limit) {
             return redirect()->back()->with('error', 'Limit bo\'yicha filial qo\'shish mumkin emas.');
         }
 
@@ -98,12 +99,13 @@ class BranchController extends Controller
     {
         try {
             $branch->delete();
+
             return redirect()->back()->with('success', 'crud.deleted');
-        }
-        catch (\Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() == 23000) {
                 return redirect()->back()->with('error', 'crud.delete_branch_error');
             }
+
             return redirect()->back()->with('error', 'crud.error');
         }
     }
@@ -111,8 +113,8 @@ class BranchController extends Controller
     private function syncMacAddresses(Branch $branch, array $macAddresses): void
     {
         $clean = collect($macAddresses)
-            ->map(fn($m) => strtoupper(trim($m)))
-            ->filter(fn($m) => $m !== '')
+            ->map(fn ($m) => strtoupper(trim($m)))
+            ->filter(fn ($m) => $m !== '')
             ->unique()
             ->values()
             ->toArray();
