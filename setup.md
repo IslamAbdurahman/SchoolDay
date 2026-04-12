@@ -89,15 +89,13 @@ chmod -R 777 storage bootstrap/cache
 
 ---
 
-## 3. Queue Worker va Supervisor Sozlamalari (Faqat Server uchun)
+## 3. Supervisor Sozlamalari (Faqat Server uchun)
 
-Excel import qilish kabi orqa fonga yo'naltirilgan og'ir jarayonlar (asinxron vazifalar) muvaffaqiyatli ishlashi uchun Supervisor orqali Laravel Worker doimiy ishlab turishi kerak. 
-
-Serverda quyidagicha configuratsiya qiling:
+Excel import qilish (queue) va real-vaqt monitoring (reverb) doimiy ishlab turishi uchun Supervisor orqali Laravel jarayonlarini boshqarish kerak.
 
 **1. Supervisor konfiguratsiya fayli yarating:**
 ```bash
-sudo nano /etc/supervisor/conf.d/schoolday-worker.conf
+sudo nano /etc/supervisor/conf.d/schoolday.conf
 ```
 
 **2. Ichi quyidagicha bo'lsin:**
@@ -115,25 +113,7 @@ numprocs=1
 redirect_stderr=true
 stdout_logfile=/var/www/schoolday/storage/logs/worker.log
 stopwaitsecs=3600
-```
 
-**3. Supervisorni yangilang va ishga tushiring:**
-```bash
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl start schoolday-worker:*
-```
-
-### 3.2. Laravel Reverb (WebSocket) Sozlamalari
-Real-vaqt monitoring (LIVE) ishlashi uchun Reverb serveri ham doimiy ishlab turishi kerak.
-
-**1. Reverb uchun Supervisor konfiguratsiya fayli yarating:**
-```bash
-sudo nano /etc/supervisor/conf.d/schoolday-reverb.conf
-```
-
-**2. Ichi quyidagicha bo'lsin:**
-```ini
 [program:schoolday-reverb]
 process_name=%(program_name)s_%(process_num)02d
 command=php /var/www/schoolday/artisan reverb:start --host=0.0.0.0 --port=8080 --hostname=schoolday.payday.uz
@@ -152,6 +132,7 @@ stopwaitsecs=3600
 ```bash
 sudo supervisorctl reread
 sudo supervisorctl update
+sudo supervisorctl start schoolday-worker:*
 sudo supervisorctl start schoolday-reverb:*
 ```
 
