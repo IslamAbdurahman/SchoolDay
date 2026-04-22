@@ -16,9 +16,21 @@ configureEcho({
         import.meta.env.VITE_REVERB_HOST === '127.0.0.1'
             ? window.location.hostname
             : import.meta.env.VITE_REVERB_HOST,
-    wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+    wsPort:
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1'
+            ? import.meta.env.VITE_REVERB_PORT ?? 80
+            : 80,
+    wssPort:
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1'
+            ? import.meta.env.VITE_REVERB_PORT ?? 443
+            : 443,
+    forceTLS:
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1'
+            ? (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https'
+            : true,
     enabledTransports: ['ws', 'wss'],
 });
 
