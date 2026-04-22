@@ -62,7 +62,7 @@ export default function ReportsPage({
                     setData={setData}
                     onSubmit={handleFilter}
                 />
-                <AttendanceTable attendances={attendances} />
+                <AttendanceTable attendances={attendances} filters={filterData} />
             </div>
         </AppLayout>
     );

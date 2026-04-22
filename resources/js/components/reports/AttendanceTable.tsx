@@ -1,22 +1,31 @@
 import { useState } from 'react';
 import { Pagination } from '@/components/pagination';
 import { useTranslation } from 'react-i18next';
-import { Users, Eye } from 'lucide-react';
+import { Users, Eye, FileDown } from 'lucide-react';
 import { ImageModal } from '@/components/students/ImageModal';
 import { Link } from '@inertiajs/react';
 
 interface AttendanceTableProps {
     attendances: any;
+    filters?: any;
 }
 
 const formatTime = (timeStr: string | null) => {
     if (!timeStr) return '-';
     return new Date(timeStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 };
-
-export function AttendanceTable({ attendances }: AttendanceTableProps) {
+export function AttendanceTable({ attendances, filters }: AttendanceTableProps) {
     const { t } = useTranslation();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const exportUrl = filters ? `/reports/export?${new URLSearchParams(
+        Object.entries(filters).reduce((acc: any, [key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                acc[key] = String(value);
+            }
+            return acc;
+        }, {})
+    ).toString()}` : '/reports/export';
 
     return (
         <div className="relative min-h-[60vh] flex-1 flex flex-col rounded-xl border border-sidebar-border dark:border-sidebar-border bg-card shadow-sm">
@@ -30,7 +39,18 @@ export function AttendanceTable({ attendances }: AttendanceTableProps) {
                             <th scope="col" className="px-6 py-4 font-medium">{t('reports.first_in', 'First Check-in')}</th>
                             <th scope="col" className="px-6 py-4 font-medium">{t('reports.last_out', 'Last Check-out')}</th>
                             <th scope="col" className="px-6 py-4 font-medium">{t('reports.details', 'Status')}</th>
-                            <th scope="col" className="px-6 py-4 font-medium text-right">{t('reports.actions', 'Actions')}</th>
+                            <th scope="col" className="px-6 py-4 font-medium text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                    <span>{t('reports.actions', 'Actions')}</span>
+                                    <a
+                                        href={exportUrl}
+                                        className="inline-flex items-center justify-center rounded-md w-8 h-8 text-muted-foreground hover:text-primary hover:bg-muted transition-colors border"
+                                        title={t('reports.export_excel', 'Export to Excel')}
+                                    >
+                                        <FileDown className="h-4 w-4" />
+                                    </a>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody className="divide-y text-card-foreground">

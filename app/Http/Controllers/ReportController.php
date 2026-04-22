@@ -15,16 +15,55 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', '20');
-        $limit = $perPage === 'all' ? 100000 : (int) $perPage;
-        $startDate = $request->input('start_date', Carbon::today()->toDateString());
-        $endDate = $request->input('end_date', Carbon::today()->toDateString());
+        $filters = $this->getFilters($request);
+        $paginated = $this->getAttendanceData($filters, true);
 
-        $branchId = $request->input('branch_id');
-        $shiftId = $request->input('shift_id');
-        $classId = $request->input('class_id');
-        $studentId = $request->input('student_id');
-        $status = $request->input('status', 'all');
+        return Inertia::render('reports/index', [
+            'attendances' => $paginated,
+            'branches' => Branch::all(),
+            'shifts' => Shift::with('branch')->get(),
+            'classes' => SchoolClass::with(['shift.branch'])->get(),
+            'students' => Student::all(),
+            'filters' => $filters,
+        ]);
+    }
+
+    public function export(Request $request)
+    {
+        $filters = $this->getFilters($request);
+        $data = $this->getAttendanceData($filters, false);
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\AttendanceExport($data),
+            'davomat_hisoboti_' . now()->format('Y-m-d_H-i') . '.xlsx'
+        );
+    }
+
+    private function getFilters(Request $request)
+    {
+        return [
+            'start_date' => $request->input('start_date', Carbon::today()->toDateString()),
+            'end_date' => $request->input('end_date', Carbon::today()->toDateString()),
+            'branch_id' => $request->input('branch_id'),
+            'shift_id' => $request->input('shift_id'),
+            'class_id' => $request->input('class_id'),
+            'student_id' => $request->input('student_id'),
+            'status' => $request->input('status', 'all'),
+            'per_page' => $request->input('per_page', '20'),
+        ];
+    }
+
+    private function getAttendanceData(array $filters, $paginate = true)
+    {
+        $perPage = $filters['per_page'];
+        $limit = $perPage === 'all' ? 100000 : (int) $perPage;
+        $startDate = $filters['start_date'];
+        $endDate = $filters['end_date'];
+        $branchId = $filters['branch_id'];
+        $shiftId = $filters['shift_id'];
+        $classId = $filters['class_id'];
+        $studentId = $filters['student_id'];
+        $status = $filters['status'];
 
         if ($status === 'absent') {
             $query = Student::with(['schoolClass.shift.branch'])
@@ -46,8 +85,16 @@ class ReportController extends Controller
                     });
                 }
             }
-            $paginated = $query->paginate($limit);
-            $paginated->getCollection()->transform(function ($student) use ($startDate) {
+
+            if ($paginate) {
+                $results = $query->paginate($limit);
+                $collection = $results->getCollection();
+            } else {
+                $results = $query->get();
+                $collection = $results;
+            }
+
+            $collection->transform(function ($student) use ($startDate) {
                 $item = new DailyAttendance([
                     'date' => clone Carbon::parse($startDate),
                 ]);
@@ -57,6 +104,8 @@ class ReportController extends Controller
 
                 return $item;
             });
+
+            return $results;
         } else {
             $query = DailyAttendance::with(['student.schoolClass.shift.branch'])
                 ->whereBetween('date', [$startDate, $endDate])
@@ -80,26 +129,9 @@ class ReportController extends Controller
                     });
                 }
             }
-            $paginated = $query->paginate($limit);
-        }
 
-        return Inertia::render('reports/index', [
-            'attendances' => $paginated,
-            'branches' => Branch::all(),
-            'shifts' => Shift::with('branch')->get(),
-            'classes' => SchoolClass::with(['shift.branch'])->get(),
-            'students' => Student::all(),
-            'filters' => [
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'branch_id' => $branchId,
-                'shift_id' => $shiftId,
-                'class_id' => $classId,
-                'student_id' => $studentId,
-                'status' => $status,
-                'per_page' => $perPage,
-            ],
-        ]);
+            return $paginate ? $query->paginate($limit) : $query->get();
+        }
     }
 
     public function show($id)

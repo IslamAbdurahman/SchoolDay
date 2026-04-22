@@ -26,6 +26,7 @@ Route::get('monitoring/data', [MonitoringController::class, 'data'])->name('moni
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
     Route::get('reports/{id}', [ReportController::class, 'show'])->name('reports.show');
     Route::delete('reports/{id}', [ReportController::class, 'destroy'])->name('reports.destroy');
     Route::delete('report-events/{id}', [ReportController::class, 'destroyEvent'])->name('report-events.destroy');
