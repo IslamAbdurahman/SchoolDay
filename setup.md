@@ -143,7 +143,40 @@ sudo supervisorctl status
 
 ---
 
-## 4. Loyihani Lokal Ishga Tushirish
+## 4. Nginx Sozlamalari (WebSocket/Reverb uchun)
+
+Real-vaqtda monitoring ishlashi uchun Nginx so'rovlarni Reverb serveriga (8080-port) yo'naltirishi kerak.
+
+**1. Nginx konfiguratsiya faylini oching:**
+```bash
+sudo nano /etc/nginx/sites-available/schoolday.payday.uz
+```
+
+**2. `server { ... }` bloki ichiga (aynan 443 SSL qismiga) quyidagi `location /app` blokini qo'shing:**
+```nginx
+location /app {
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header Scheme $scheme;
+    proxy_set_header SERVER_PORT $server_port;
+    proxy_set_header REMOTE_ADDR $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+
+    proxy_pass http://127.0.0.1:8080;
+}
+```
+
+**3. Nginx'ni tekshiring va qayta yuklang:**
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+---
+
+## 5. Loyihani Lokal Ishga Tushirish
 Agar Windows/Mac'da ishlayotgan bo'lsangiz 3 ta terminalni ochib ilovani yurgizing:
 
 1-terminal (Veb server):
