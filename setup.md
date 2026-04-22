@@ -78,7 +78,7 @@ npm run dev
 ```
 
 ### 2.6. Xotirani va Fayllarni Bog'lash
-Laravel'dagi rasmlar va yuklanmalar ommasiga (public) yetib kelishi uchun link yarating:
+SchoolDay'dagi rasmlar va yuklanmalar ommasiga (public) yetib kelishi uchun link yarating:
 ```bash
 php artisan storage:link
 ```
@@ -91,7 +91,7 @@ chmod -R 777 storage bootstrap/cache
 
 ## 3. Supervisor Sozlamalari (Faqat Server uchun)
 
-Excel import qilish (queue) va real-vaqt monitoring (reverb) doimiy ishlab turishi uchun Supervisor orqali Laravel jarayonlarini boshqarish kerak.
+Excel import qilish (queue) va real-vaqt monitoring (reverb) doimiy ishlab turishi uchun Supervisor orqali SchoolDay jarayonlarini boshqarish kerak.
 
 **1. Supervisor konfiguratsiya fayli yarating:**
 ```bash
